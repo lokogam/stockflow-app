@@ -15,23 +15,11 @@ import { Card, CardContent } from "@/components/ui/Card";
 import { getBrands, getProducts } from "@/lib/api";
 import { type Brand, type Product } from "@/lib/types";
 
-function getImageByName(name: string): string {
-  const map: Array<[RegExp, string]> = [
-    [/galaxy|samsung/i, "1511707171634-5f897ff02aa9"],
-    [/iphone|ipad|apple/i, "1591337676887-a217a6970a8a"],
-    [/airpod|headphone|auricular|wh-1000|xm5/i, "1505740420928-5e560c06d30e"],
-    [/tab|tablet/i, "1544244015-0df4b3ffc6b0"],
-    [/playstation|ps5|console|xbox/i, "1607853202273-797f1c22a38e"],
-    [/mouse|raton|mx master/i, "1527864550417-7fd91fc51a46"],
-    [/keyboard|teclado|mx keys/i, "1587829741301-dc798b83add3"],
-  ];
-
-  for (const [matcher, id] of map) {
-    if (matcher.test(name)) return id;
-  }
-
-  return "1491553895911-0055eca6402d";
-}
+const UNIT_BADGE_STYLES: Record<string, string> = {
+  Unidad: "bg-blue-50 text-blue-700 border border-blue-200",
+  Display: "bg-amber-50 text-amber-700 border border-amber-200",
+  Caja: "bg-emerald-50 text-emerald-700 border border-emerald-200",
+};
 
 export default function StorePage() {
   const [products, setProducts] = useState<Product[]>([]);
@@ -177,13 +165,12 @@ export default function StorePage() {
             {filteredProducts.map((product) => {
               const brand = brands.find((b) => b.id === product.brand_id);
               const inStock = product.inventory_quantity > 0;
-              const imageId = getImageByName(product.name);
 
               return (
                 <Card key={product.id} className="group flex flex-col overflow-hidden border border-border transition-all duration-200 hover:-translate-y-0.5 hover:shadow-xl">
                   <div className="relative h-52 overflow-hidden bg-muted">
                     <Image
-                      src={`https://images.unsplash.com/photo-${imageId}?w=480&h=320&fit=crop&auto=format`}
+                      src="/generic-product.svg"
                       alt={product.name}
                       width={480}
                       height={320}
@@ -191,12 +178,14 @@ export default function StorePage() {
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent" />
                     <div className="absolute left-3 top-3">
-                      <Badge className={inStock ? "bg-emerald-500 text-white" : "bg-foreground/80 text-white"}>
+                      <Badge className={inStock ? "bg-emerald-500 text-white border border-emerald-600" : "bg-foreground/80 text-white"}>
                         {inStock ? "En stock" : "Agotado"}
                       </Badge>
                     </div>
                     <div className="absolute right-3 top-3">
-                      <Badge variant="secondary">{product.unit_of_measure}</Badge>
+                      <span className={`px-2 py-0.5 text-[10px] font-medium ${UNIT_BADGE_STYLES[product.unit_of_measure] ?? "bg-muted text-foreground border border-border"}`}>
+                        {product.unit_of_measure}
+                      </span>
                     </div>
                   </div>
 
