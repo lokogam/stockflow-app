@@ -152,9 +152,9 @@ export default function ProductsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
+    <main className="min-h-screen overflow-x-hidden bg-background px-4 py-8 sm:px-6">
       <div className="bg-foreground text-primary-foreground -mx-4 -mt-8 sm:-mx-6">
-        <div className="mx-auto flex h-8 w-full max-w-7xl items-center gap-2 px-4 sm:px-6">
+        <div className="mx-auto flex h-8 w-full max-w-6xl items-center gap-2 overflow-x-auto px-4 sm:px-6">
           <span className="mr-2 text-[10px] uppercase tracking-widest text-primary-foreground/45">Vista actual:</span>
           <Link href="/store" className="px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground/90">
             <span className="inline-flex items-center gap-1.5"><Store size={10} /> Tienda</span>
@@ -166,18 +166,18 @@ export default function ProductsPage() {
       </div>
 
       <header className="bg-primary text-primary-foreground -mx-4 sm:-mx-6">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-          <div className="flex h-14 items-center gap-4">
-            <div className="flex shrink-0 items-center gap-2.5">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <div className="flex h-14 items-center gap-2 overflow-x-auto sm:gap-4">
+            <div className="flex shrink-0 items-center gap-2.5 min-[380px]:gap-2.5">
               <LayoutDashboard size={16} />
-              <span className="text-sm font-bold uppercase tracking-[0.15em]">Panel de Administracion</span>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] sm:text-sm">Panel de Administracion</span>
             </div>
-            <div className="mx-1 h-5 w-px bg-primary-foreground/20" />
-            <div className="flex items-center gap-1">
-              <Link href="/admin/products" className="bg-primary-foreground px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary">
+            <div className="mx-1 hidden h-5 w-px bg-primary-foreground/20 sm:block" />
+            <div className="flex shrink-0 items-center gap-1">
+              <Link href="/admin/products" className="bg-primary-foreground px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary sm:px-3 sm:text-[11px]">
                 Productos
               </Link>
-              <Link href="/admin/brands" className="px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground">
+              <Link href="/admin/brands" className="px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground sm:px-3 sm:text-[11px]">
                 Marcas
               </Link>
             </div>
@@ -193,7 +193,7 @@ export default function ProductsPage() {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-7xl py-8">
+      <div className="mx-auto w-full max-w-6xl py-8">
         {brands.length === 0 ? (
           <div className="mb-4 flex items-center gap-2 border border-amber-200 bg-amber-50 p-3 text-xs text-amber-800">
             <AlertCircle size={13} /> Cree al menos una marca antes de agregar productos.
@@ -202,9 +202,9 @@ export default function ProductsPage() {
 
         {errorMessage ? <p className="text-destructive mb-4 text-sm">{errorMessage}</p> : null}
 
-        <div className="mb-6 flex items-start justify-between">
+        <div className="mb-6 flex items-start justify-between gap-3">
           <div>
-            <h2 className="text-3xl leading-none">Productos</h2>
+            <h2 className="text-2xl font-bold uppercase tracking-[0.06em]">Productos</h2>
             <p className="text-muted-foreground mt-1 text-xs">
               {products.length} producto{products.length === 1 ? "" : "s"} - {totalStock.toLocaleString()} unidades en stock
             </p>
@@ -212,7 +212,7 @@ export default function ProductsPage() {
           <button
             onClick={() => setIsCreateOpen(true)}
             disabled={brands.length === 0}
-            className="bg-primary text-primary-foreground inline-flex shrink-0 items-center gap-2 px-4 py-2 text-[11px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40"
+            className="bg-primary text-primary-foreground inline-flex shrink-0 items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest transition-opacity hover:opacity-90 disabled:cursor-not-allowed disabled:opacity-40 sm:px-4 sm:text-[11px]"
           >
             <Plus size={13} /> Nuevo producto
           </button>
@@ -232,7 +232,7 @@ export default function ProductsPage() {
           <select
             value={filterBrand}
             onChange={(event) => setFilterBrand(event.target.value)}
-            className="border-border bg-input-background focus:ring-ring min-w-[160px] border px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2"
+            className="border-border bg-input-background focus:ring-ring w-full border px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 sm:min-w-[160px] sm:w-auto"
           >
             <option value="">Todas las marcas</option>
             {brands.map((brand) => (
@@ -245,7 +245,7 @@ export default function ProductsPage() {
           <select
             value={filterUnit}
             onChange={(event) => setFilterUnit(event.target.value)}
-            className="border-border bg-input-background focus:ring-ring min-w-[140px] border px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2"
+            className="border-border bg-input-background focus:ring-ring w-full border px-3 py-2 text-sm transition-all focus:outline-none focus:ring-2 sm:min-w-[140px] sm:w-auto"
           >
             <option value="">Todas las unidades</option>
             <option value="Unidad">Unidad</option>
@@ -254,7 +254,7 @@ export default function ProductsPage() {
           </select>
         </div>
 
-        <div className="overflow-x-auto border border-border">
+        <div className="w-full overflow-x-auto border border-border">
           <table className="min-w-[640px] w-full text-sm">
             <thead>
               <tr className="bg-muted/60 border-b border-border">
@@ -286,7 +286,7 @@ export default function ProductsPage() {
                     const brand = brands.find((item) => item.id === product.brand_id);
 
                     return (
-                      <tr key={product.id} className={`border-b border-border last:border-0 hover:bg-accent/60 ${index % 2 === 1 ? "bg-muted/20" : ""}`}>
+                      <tr key={product.id} className={`border-b border-border last:border-0 transition-colors hover:bg-accent/60 ${index % 2 === 1 ? "bg-muted/20" : ""}`}>
                         <td className="px-4 py-3">
                           <div className="text-sm font-semibold leading-tight">{product.name}</div>
                           <div className="text-muted-foreground mt-0.5 max-w-[280px] line-clamp-1 text-xs">{product.observations}</div>

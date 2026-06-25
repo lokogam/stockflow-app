@@ -106,9 +106,9 @@ export default function BrandsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
+    <main className="min-h-screen overflow-x-hidden bg-background px-4 py-8 sm:px-6">
       <div className="bg-foreground text-primary-foreground -mx-4 -mt-8 sm:-mx-6">
-        <div className="mx-auto flex h-8 w-full max-w-7xl items-center gap-2 px-4 sm:px-6">
+        <div className="mx-auto flex h-8 w-full max-w-6xl items-center gap-2 overflow-x-auto px-4 sm:px-6">
           <span className="mr-2 text-[10px] uppercase tracking-widest text-primary-foreground/45">Vista actual:</span>
           <Link href="/store" className="px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground/90">
             <span className="inline-flex items-center gap-1.5"><Store size={10} /> Tienda</span>
@@ -120,18 +120,18 @@ export default function BrandsPage() {
       </div>
 
       <header className="bg-primary text-primary-foreground -mx-4 sm:-mx-6">
-        <div className="mx-auto w-full max-w-7xl px-4 sm:px-6">
-          <div className="flex h-14 items-center gap-4">
+        <div className="mx-auto w-full max-w-6xl px-4 sm:px-6">
+          <div className="flex h-14 items-center gap-2 overflow-x-auto sm:gap-4">
             <div className="flex shrink-0 items-center gap-2.5">
               <LayoutDashboard size={16} />
-              <span className="text-sm font-bold uppercase tracking-[0.15em]">Panel de Administracion</span>
+              <span className="text-xs font-bold uppercase tracking-[0.15em] sm:text-sm">Panel de Administracion</span>
             </div>
-            <div className="mx-1 h-5 w-px bg-primary-foreground/20" />
-            <div className="flex items-center gap-1">
-              <Link href="/admin/products" className="px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground">
+            <div className="mx-1 hidden h-5 w-px bg-primary-foreground/20 sm:block" />
+            <div className="flex shrink-0 items-center gap-1">
+              <Link href="/admin/products" className="px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground sm:px-3 sm:text-[11px]">
                 Productos
               </Link>
-              <Link href="/admin/brands" className="bg-primary-foreground px-3 py-1 text-[11px] font-semibold uppercase tracking-widest text-primary">
+              <Link href="/admin/brands" className="bg-primary-foreground px-2 py-1 text-[10px] font-semibold uppercase tracking-widest text-primary sm:px-3 sm:text-[11px]">
                 Marcas
               </Link>
             </div>
@@ -142,7 +142,7 @@ export default function BrandsPage() {
         </div>
       </header>
 
-      <div className="mx-auto w-full max-w-7xl py-8">
+      <div className="mx-auto w-full max-w-6xl py-8">
         {inlineAlert ? (
           <div className="mb-4 flex items-center gap-2 border border-destructive/30 bg-destructive/10 p-3 text-sm text-destructive">
             <AlertCircle size={14} />
@@ -153,9 +153,9 @@ export default function BrandsPage() {
           </div>
         ) : null}
 
-        <div className="mb-6 flex items-center justify-between">
+        <div className="mb-6 flex items-center justify-between gap-3">
           <div>
-            <h2 className="text-3xl leading-none">Marcas</h2>
+            <h2 className="text-2xl font-bold uppercase tracking-[0.06em]">Marcas</h2>
             <p className="text-muted-foreground mt-1 text-xs">
               {brands.length} marca{brands.length === 1 ? "" : "s"} registrada{brands.length === 1 ? "" : "s"}
             </p>
@@ -163,22 +163,22 @@ export default function BrandsPage() {
           <div className="flex items-center gap-2">
             <button
               onClick={() => setIsCreateOpen(true)}
-              className="bg-primary text-primary-foreground inline-flex items-center gap-2 px-4 py-2 text-[11px] font-semibold uppercase tracking-widest hover:opacity-90"
+              className="bg-primary text-primary-foreground inline-flex items-center gap-2 px-3 py-2 text-[10px] font-semibold uppercase tracking-widest hover:opacity-90 sm:px-4 sm:text-[11px]"
             >
               <Plus size={13} />
               Nueva marca
             </button>
             <button
               onClick={() => void loadBrands()}
-              className="border border-border px-4 py-2 text-[11px] font-semibold uppercase tracking-widest hover:bg-muted"
+              className="border border-border px-3 py-2 text-[10px] font-semibold uppercase tracking-widest hover:bg-muted sm:px-4 sm:text-[11px]"
             >
               Recargar
             </button>
           </div>
         </div>
 
-        <div className="overflow-hidden border border-border">
-          <table className="w-full text-sm">
+        <div className="w-full overflow-x-auto border border-border">
+          <table className="min-w-[560px] w-full text-sm">
             <thead>
               <tr className="border-b border-border bg-muted/60">
                 <th className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-[0.1em] text-muted-foreground">Nombre</th>
@@ -206,7 +206,7 @@ export default function BrandsPage() {
                     const productsCount = brand.products_count ?? 0;
 
                     return (
-                      <tr key={brand.id} className={`border-b border-border last:border-0 hover:bg-accent/60 ${index % 2 === 1 ? "bg-muted/20" : ""}`}>
+                      <tr key={brand.id} className={`border-b border-border last:border-0 transition-colors hover:bg-accent/60 ${index % 2 === 1 ? "bg-muted/20" : ""}`}>
                         <td className="px-4 py-3 text-sm font-semibold">{brand.name}</td>
                         <td className="px-4 py-3">
                           <span className="border border-border bg-muted px-2 py-0.5 text-xs">{brand.reference}</span>
