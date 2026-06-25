@@ -1,36 +1,90 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Stockflow App
 
-## Getting Started
+Frontend de Stockflow para catalogo, administracion de marcas y administracion de productos. Esta app consume el backend Laravel/API existente y usa Sanctum con cookies para autenticacion y CRUD.
 
-First, run the development server:
+## Stack
+
+- Next.js 16 con App Router
+- React 19
+- TypeScript
+- Tailwind CSS 4
+- Axios para llamadas al backend
+- Lucide React para iconos
+
+## Funcionalidades
+
+- Tienda con busqueda por nombre y marca
+- Filtro por marca y unidad
+- Tarjetas de producto con imagen generica compartida
+- Panel de administracion para marcas y productos
+- Formularios de crear y editar con validacion en frontend
+- Eliminacion con modal de confirmacion
+- Integracion con backend Laravel via API REST
+
+## Variables de entorno
+
+Crear un archivo `.env.local` con la URL del backend:
+
+```env
+NEXT_PUBLIC_BACKEND_URL=http://localhost:8000
+```
+
+En produccion, apunta a la URL publica del backend desplegado.
+
+## Scripts
 
 ```bash
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+npm run build
+npm start
+npm run lint
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Inicio rapido
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+1. Instala dependencias:
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm install
+```
 
-## Learn More
+2. Crea `.env.local` a partir de `.env.example` y ajusta `NEXT_PUBLIC_BACKEND_URL`.
 
-To learn more about Next.js, take a look at the following resources:
+3. Levanta el frontend:
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+4. Abre [http://localhost:3000](http://localhost:3000).
 
-## Deploy on Vercel
+## Backend esperado
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+El frontend espera un backend Laravel disponible en `/api` con estas rutas principales:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `GET /api/products`
+- `POST /api/products`
+- `PUT /api/products/{id}`
+- `DELETE /api/products/{id}`
+- `GET /api/brands`
+- `POST /api/brands`
+- `PUT /api/brands/{id}`
+- `DELETE /api/brands/{id}`
+
+Tambien requiere `/sanctum/csrf-cookie` para mutaciones autenticadas con Sanctum.
+
+## Estructura relevante
+
+- `src/app/store/page.tsx` catalogo publico
+- `src/app/admin/products/page.tsx` administracion de productos
+- `src/app/admin/brands/page.tsx` administracion de marcas
+- `src/lib/api.ts` cliente API
+- `src/lib/axios.ts` configuracion de Axios y backend URL
+- `src/components/forms/` formularios reutilizables
+- `src/components/ui/` componentes base de la interfaz
+
+## Notas de despliegue
+
+- Configura `NEXT_PUBLIC_BACKEND_URL` con la URL publica del API.
+- Verifica CORS y Sanctum en el backend para permitir el dominio del frontend.
+- Ejecuta `npm run build` antes de desplegar.
