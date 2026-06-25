@@ -17,7 +17,7 @@ interface SelectFieldProps {
 export function SelectField({ label, name, value, error, options, onChange }: SelectFieldProps) {
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={name} className="text-foreground">
+      <Label htmlFor={name} className="text-muted-foreground text-[10px] uppercase tracking-[0.12em]">
         {label}
       </Label>
       <select

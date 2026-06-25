@@ -1,6 +1,8 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import Link from "next/link";
+import { Edit2, LayoutDashboard, Store, Trash2 } from "lucide-react";
 import { ProductForm } from "@/components/forms/ProductForm";
 import { Badge } from "@/components/ui/Badge";
 import { Button } from "@/components/ui/Button";
@@ -113,6 +115,18 @@ export default function ProductsPage() {
 
   return (
     <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
+      <div className="bg-foreground text-primary-foreground -mx-4 -mt-8 mb-6 sm:-mx-6">
+        <div className="mx-auto flex h-8 w-full max-w-7xl items-center gap-2 px-4 sm:px-6">
+          <span className="mr-2 text-[10px] uppercase tracking-widest text-primary-foreground/45">Vista actual:</span>
+          <Link href="/store" className="px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-primary-foreground/60 hover:text-primary-foreground/90">
+            <span className="inline-flex items-center gap-1.5"><Store size={10} /> Tienda</span>
+          </Link>
+          <Link href="/admin/products" className="bg-ring px-3 py-0.5 text-[10px] font-semibold uppercase tracking-widest text-white">
+            <span className="inline-flex items-center gap-1.5"><LayoutDashboard size={10} /> Administracion</span>
+          </Link>
+        </div>
+      </div>
+
       <div className="mx-auto mb-6 flex w-full max-w-7xl items-center justify-between">
         <div>
           <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">Panel Administrativo</p>
@@ -180,10 +194,12 @@ export default function ProductsPage() {
                   <TableCell>{product.inventory_quantity}</TableCell>
                   <TableCell className="text-right">
                     <div className="flex justify-end gap-2">
-                      <Button onClick={() => setSelectedProduct(product)}>Editar</Button>
-                      <Button variant="destructive" onClick={() => void handleDelete(product.id)}>
-                        Eliminar
-                      </Button>
+                      <button onClick={() => setSelectedProduct(product)} className="text-muted-foreground hover:text-foreground inline-flex p-1.5 hover:bg-accent">
+                        <Edit2 size={13} />
+                      </button>
+                      <button onClick={() => void handleDelete(product.id)} className="text-muted-foreground hover:text-destructive inline-flex p-1.5 hover:bg-destructive/10">
+                        <Trash2 size={13} />
+                      </button>
                     </div>
                   </TableCell>
                 </TableRow>

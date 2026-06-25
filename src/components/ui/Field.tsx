@@ -13,7 +13,7 @@ interface FieldProps {
 export function Field({ label, name, value, error, placeholder, onChange }: FieldProps) {
   return (
     <div className="flex flex-col gap-2">
-      <Label htmlFor={name} className="text-foreground">
+      <Label htmlFor={name} className="text-muted-foreground text-[10px] uppercase tracking-[0.12em]">
         {label}
       </Label>
       <Input
