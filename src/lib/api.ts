@@ -5,18 +5,10 @@ import {
   type Product,
   type ProductPayload,
 } from "./types";
+import axios from "./axios";
+import { AxiosError, type Method } from "axios";
 
-const API_BASE_URL = (
-  process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000/api"
-).replace(/\/$/, "");
-
-const API_ORIGIN = (() => {
-  try {
-    return new URL(API_BASE_URL).origin;
-  } catch {
-    return "http://localhost:8000";
-  }
-})();
+const API_PREFIX = "/api";
 
 let csrfInitialized = false;
 
@@ -43,41 +35,16 @@ function getErrorMessage(payload: unknown): ApiValidationError {
   return { message: "Ocurrio un error en la solicitud." };
 }
 
-function readCookie(name: string): string | null {
-  if (typeof document === "undefined") {
-    return null;
-  }
-
-  const prefixed = `${name}=`;
-  const cookieParts = document.cookie.split(";");
-
-  for (const raw of cookieParts) {
-    const cookie = raw.trim();
-    if (cookie.startsWith(prefixed)) {
-      return decodeURIComponent(cookie.slice(prefixed.length));
-    }
-  }
-
-  return null;
-}
-
 async function ensureCsrfCookie(): Promise<void> {
   if (csrfInitialized) {
     return;
   }
 
-  const response = await fetch(`${API_ORIGIN}/sanctum/csrf-cookie`, {
-    method: "GET",
-    credentials: "include",
-    cache: "no-store",
-    headers: {
-      "X-Requested-With": "XMLHttpRequest",
-      Accept: "application/json",
-    },
-  });
-
-  if (!response.ok) {
-    throw new ApiError(response.status, "No se pudo inicializar la cookie CSRF.");
+  try {
+    await axios.get("/sanctum/csrf-cookie");
+  } catch (error) {
+    const axiosError = error as AxiosError;
+    throw new ApiError(axiosError.response?.status ?? 500, "No se pudo inicializar la cookie CSRF.");
   }
 
   csrfInitialized = true;
@@ -87,59 +54,38 @@ function isMutation(method: string): boolean {
   return ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase());
 }
 
-async function performRequest(url: string, init: RequestInit, retryOn419 = true): Promise<Response> {
-  const method = (init.method ?? "GET").toUpperCase();
+async function request<T>(
+  path: string,
+  options?: { method?: Method; data?: unknown },
+  retryOn419 = true
+): Promise<T> {
+  const method = (options?.method ?? "GET").toUpperCase();
 
   if (isMutation(method)) {
     await ensureCsrfCookie();
   }
 
-  const token = readCookie("XSRF-TOKEN");
-  const headers: Record<string, string> = {
-    Accept: "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    ...(init.headers as Record<string, string> | undefined),
-  };
+  try {
+    const response = await axios.request<T>({
+      url: `${API_PREFIX}${path}`,
+      method,
+      data: options?.data,
+    });
 
-  if (init.body !== undefined && !headers["Content-Type"]) {
-    headers["Content-Type"] = "application/json";
+    return response.data;
+  } catch (error) {
+    const axiosError = error as AxiosError<ApiValidationError>;
+    const status = axiosError.response?.status ?? 500;
+
+    if (status === 419 && retryOn419 && isMutation(method)) {
+      csrfInitialized = false;
+      await ensureCsrfCookie();
+      return request<T>(path, options, false);
+    }
+
+    const normalized = getErrorMessage(axiosError.response?.data);
+    throw new ApiError(status, normalized.message, normalized.errors);
   }
-
-  if (isMutation(method) && token) {
-    headers["X-XSRF-TOKEN"] = token;
-  }
-
-  const response = await fetch(url, {
-    ...init,
-    headers,
-    credentials: "include",
-    cache: "no-store",
-  });
-
-  if (response.status === 419 && retryOn419 && isMutation(method)) {
-    csrfInitialized = false;
-    await ensureCsrfCookie();
-    return performRequest(url, init, false);
-  }
-
-  return response;
-}
-
-async function request<T>(path: string, init?: RequestInit): Promise<T> {
-  const response = await performRequest(`${API_BASE_URL}${path}`, init ?? {});
-
-  if (!response.ok) {
-    const payload = await response.json().catch(() => null);
-    const normalized = getErrorMessage(payload);
-
-    throw new ApiError(response.status, normalized.message, normalized.errors);
-  }
-
-  if (response.status === 204) {
-    return undefined as T;
-  }
-
-  return (await response.json()) as T;
 }
 
 function extractCollection<T>(payload: unknown): T[] {
@@ -165,17 +111,11 @@ export async function getBrands(): Promise<Brand[]> {
 }
 
 export async function createBrand(data: BrandPayload): Promise<Brand> {
-  return request<Brand>("/brands", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return request<Brand>("/brands", { method: "POST", data });
 }
 
 export async function updateBrand(id: number, data: BrandPayload): Promise<Brand> {
-  return request<Brand>(`/brands/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+  return request<Brand>(`/brands/${id}`, { method: "PUT", data });
 }
 
 export async function deleteBrand(id: number): Promise<void> {
@@ -188,21 +128,15 @@ export async function getProducts(): Promise<Product[]> {
 }
 
 export async function createProduct(data: ProductPayload): Promise<Product> {
-  return request<Product>("/products", {
-    method: "POST",
-    body: JSON.stringify(data),
-  });
+  return request<Product>("/products", { method: "POST", data });
 }
 
 export async function updateProduct(id: number, data: ProductPayload): Promise<Product> {
-  return request<Product>(`/products/${id}`, {
-    method: "PUT",
-    body: JSON.stringify(data),
-  });
+  return request<Product>(`/products/${id}`, { method: "PUT", data });
 }
 
 export async function deleteProduct(id: number): Promise<void> {
   await request<void>(`/products/${id}`, { method: "DELETE" });
 }
 
-export { ApiError, API_BASE_URL };
+export { ApiError };

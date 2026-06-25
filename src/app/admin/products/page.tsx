@@ -2,6 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { ProductForm } from "@/components/forms/ProductForm";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
 import {
   ApiError,
   createProduct,
@@ -101,7 +112,14 @@ export default function ProductsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 px-4 py-8 sm:px-6">
+    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
+      <div className="mx-auto mb-6 flex w-full max-w-7xl items-center justify-between">
+        <div>
+          <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">Panel Administrativo</p>
+          <h1 className="text-4xl leading-none">Gestion de Productos</h1>
+        </div>
+      </div>
+
       <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[420px_1fr]">
         <ProductForm
           key={selectedProduct ? `edit-${selectedProduct.id}` : "create-product"}
@@ -124,50 +142,56 @@ export default function ProductsPage() {
           onCancelEdit={() => setSelectedProduct(null)}
         />
 
-        <section className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <header className="mb-4 flex items-center justify-between">
-            <h1 className="text-xl font-bold text-zinc-900">Productos</h1>
-            <button
-              onClick={() => void loadData()}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
-            >
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>Productos</CardTitle>
+              <CardDescription>Inventario completo con unidad, marca y acciones</CardDescription>
+            </div>
+            <Button variant="outline" onClick={() => void loadData()}>
               Recargar
-            </button>
-          </header>
+            </Button>
+          </CardHeader>
+          <CardContent>
 
-          {isLoading ? <p className="text-sm text-zinc-600">Cargando productos...</p> : null}
+          {isLoading ? <p className="text-sm text-muted-foreground">Cargando productos...</p> : null}
           {!isLoading && products.length === 0 ? (
-            <p className="text-sm text-zinc-600">No hay productos registrados.</p>
+            <p className="text-sm text-muted-foreground">No hay productos registrados.</p>
           ) : null}
 
-          <div className="grid gap-3">
-            {products.map((product) => (
-              <article key={product.id} className="rounded-lg border border-zinc-200 p-4">
-                <p className="text-base font-semibold text-zinc-900">{product.name}</p>
-                <p className="text-sm text-zinc-600">Unidad: {product.unit_of_measure}</p>
-                <p className="text-sm text-zinc-600">Marca: {product.brand?.name ?? "Sin marca"}</p>
-                <p className="text-sm text-zinc-600">
-                  Inventario: {product.inventory_quantity}
-                </p>
-
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => setSelectedProduct(product)}
-                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-zinc-700"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => void handleDelete(product.id)}
-                    className="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-semibold text-red-700 transition hover:bg-red-50"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Producto</TableHead>
+                <TableHead>Unidad</TableHead>
+                <TableHead>Marca</TableHead>
+                <TableHead>Inventario</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {products.map((product) => (
+                <TableRow key={product.id}>
+                  <TableCell className="font-semibold">{product.name}</TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{product.unit_of_measure}</Badge>
+                  </TableCell>
+                  <TableCell>{product.brand?.name ?? "Sin marca"}</TableCell>
+                  <TableCell>{product.inventory_quantity}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button onClick={() => setSelectedProduct(product)}>Editar</Button>
+                      <Button variant="destructive" onClick={() => void handleDelete(product.id)}>
+                        Eliminar
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );

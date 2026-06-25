@@ -1,4 +1,5 @@
 import { type ReactNode } from "react";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
 
 interface FormCardProps {
   title: string;
@@ -8,12 +9,12 @@ interface FormCardProps {
 
 export function FormCard({ title, subtitle, children }: FormCardProps) {
   return (
-    <section className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-      <header className="mb-5">
-        <h2 className="text-xl font-bold text-zinc-900">{title}</h2>
-        <p className="text-sm text-zinc-600">{subtitle}</p>
-      </header>
-      {children}
-    </section>
+    <Card>
+      <CardHeader>
+        <CardTitle>{title}</CardTitle>
+        <CardDescription>{subtitle}</CardDescription>
+      </CardHeader>
+      <CardContent>{children}</CardContent>
+    </Card>
   );
 }

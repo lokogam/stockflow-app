@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { FormCard } from "@/components/ui/FormCard";
 import { Field } from "@/components/ui/Field";
+import { Button } from "@/components/ui/Button";
 import { validateBrand } from "@/lib/validators";
 import { type BrandPayload } from "@/lib/types";
 
@@ -77,21 +78,20 @@ export function BrandForm({
         {serverError ? <p className="text-sm text-red-600">{serverError}</p> : null}
 
         <div className="flex gap-2">
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Guardando..." : mode === "create" ? "Crear" : "Actualizar"}
-          </button>
+          </Button>
           {mode === "edit" ? (
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={onCancelEdit}
-              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
             >
               Cancelar
-            </button>
+            </Button>
           ) : null}
         </div>
       </form>

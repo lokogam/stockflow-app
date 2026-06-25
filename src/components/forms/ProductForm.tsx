@@ -4,6 +4,9 @@ import { useState } from "react";
 import { FormCard } from "@/components/ui/FormCard";
 import { Field } from "@/components/ui/Field";
 import { SelectField } from "@/components/ui/SelectField";
+import { Label } from "@/components/ui/Label";
+import { Textarea } from "@/components/ui/Textarea";
+import { Button } from "@/components/ui/Button";
 import { UNIT_OPTIONS, type Brand, type ProductPayload } from "@/lib/types";
 import { validateProduct } from "@/lib/validators";
 
@@ -122,11 +125,11 @@ export function ProductForm({
           }
         />
 
-        <div className="flex flex-col gap-1">
-          <label htmlFor="observations" className="text-sm font-medium text-zinc-700">
+        <div className="flex flex-col gap-2">
+          <Label htmlFor="observations" className="text-foreground">
             Observaciones
-          </label>
-          <textarea
+          </Label>
+          <Textarea
             id="observations"
             name="observations"
             value={values.observations}
@@ -136,7 +139,6 @@ export function ProductForm({
                 observations: event.target.value,
               }))
             }
-            className="min-h-24 w-full rounded-lg border border-zinc-300 px-3 py-2 text-zinc-900 outline-none transition focus:border-zinc-500"
           />
           {errors.observations ? <p className="text-xs text-red-600">{errors.observations}</p> : null}
         </div>
@@ -144,21 +146,20 @@ export function ProductForm({
         {serverError ? <p className="text-sm text-red-600">{serverError}</p> : null}
 
         <div className="flex gap-2">
-          <button
+          <Button
             type="submit"
             disabled={loading}
-            className="rounded-lg bg-zinc-900 px-4 py-2 text-sm font-semibold text-white transition hover:bg-zinc-700 disabled:cursor-not-allowed disabled:opacity-70"
           >
             {loading ? "Guardando..." : mode === "create" ? "Crear" : "Actualizar"}
-          </button>
+          </Button>
           {mode === "edit" ? (
-            <button
+            <Button
               type="button"
+              variant="outline"
               onClick={onCancelEdit}
-              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
             >
               Cancelar
-            </button>
+            </Button>
           ) : null}
         </div>
       </form>

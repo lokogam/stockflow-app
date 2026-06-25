@@ -2,6 +2,17 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { BrandForm } from "@/components/forms/BrandForm";
+import { Badge } from "@/components/ui/Badge";
+import { Button } from "@/components/ui/Button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/Card";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/Table";
 import { ApiError, createBrand, deleteBrand, getBrands, updateBrand } from "@/lib/api";
 import { type Brand, type BrandPayload } from "@/lib/types";
 
@@ -90,8 +101,15 @@ export default function BrandsPage() {
   }
 
   return (
-    <main className="min-h-screen bg-zinc-100 px-4 py-8 sm:px-6">
-      <div className="mx-auto grid w-full max-w-6xl gap-6 lg:grid-cols-[380px_1fr]">
+    <main className="min-h-screen bg-background px-4 py-8 sm:px-6">
+      <div className="mx-auto mb-6 flex w-full max-w-7xl items-center justify-between">
+        <div>
+          <p className="text-muted-foreground text-xs uppercase tracking-[0.2em]">Panel Administrativo</p>
+          <h1 className="text-4xl leading-none">Gestion de Marcas</h1>
+        </div>
+      </div>
+
+      <div className="mx-auto grid w-full max-w-7xl gap-6 lg:grid-cols-[380px_1fr]">
         <BrandForm
           key={selectedBrand ? `edit-${selectedBrand.id}` : "create-brand"}
           mode={mode}
@@ -109,49 +127,54 @@ export default function BrandsPage() {
           onCancelEdit={() => setSelectedBrand(null)}
         />
 
-        <section className="rounded-xl border border-zinc-200 bg-white p-6 shadow-sm">
-          <header className="mb-4 flex items-center justify-between">
-            <h1 className="text-xl font-bold text-zinc-900">Marcas</h1>
-            <button
-              onClick={() => void loadBrands()}
-              className="rounded-lg border border-zinc-300 px-3 py-1.5 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
-            >
+        <Card>
+          <CardHeader className="flex flex-row items-center justify-between gap-3">
+            <div>
+              <CardTitle>Marcas</CardTitle>
+              <CardDescription>Tabla administrativa con acciones de editar y eliminar</CardDescription>
+            </div>
+            <Button variant="outline" onClick={() => void loadBrands()}>
               Recargar
-            </button>
-          </header>
+            </Button>
+          </CardHeader>
+          <CardContent>
 
-          {isLoading ? <p className="text-sm text-zinc-600">Cargando marcas...</p> : null}
+          {isLoading ? <p className="text-sm text-muted-foreground">Cargando marcas...</p> : null}
           {!isLoading && brands.length === 0 ? (
-            <p className="text-sm text-zinc-600">No hay marcas registradas.</p>
+            <p className="text-sm text-muted-foreground">No hay marcas registradas.</p>
           ) : null}
 
-          <div className="grid gap-3">
-            {brands.map((brand) => (
-              <article key={brand.id} className="rounded-lg border border-zinc-200 p-4">
-                <p className="text-base font-semibold text-zinc-900">{brand.name}</p>
-                <p className="text-sm text-zinc-600">Referencia: {brand.reference}</p>
-                <p className="text-sm text-zinc-600">
-                  Productos asociados: {brand.products_count ?? 0}
-                </p>
-
-                <div className="mt-3 flex gap-2">
-                  <button
-                    onClick={() => setSelectedBrand(brand)}
-                    className="rounded-lg bg-zinc-900 px-3 py-1.5 text-sm font-semibold text-white transition hover:bg-zinc-700"
-                  >
-                    Editar
-                  </button>
-                  <button
-                    onClick={() => void handleDelete(brand.id)}
-                    className="rounded-lg border border-red-300 px-3 py-1.5 text-sm font-semibold text-red-700 transition hover:bg-red-50"
-                  >
-                    Eliminar
-                  </button>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead>Nombre</TableHead>
+                <TableHead>Referencia</TableHead>
+                <TableHead>Productos</TableHead>
+                <TableHead className="text-right">Acciones</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {brands.map((brand) => (
+                <TableRow key={brand.id}>
+                  <TableCell className="font-semibold">{brand.name}</TableCell>
+                  <TableCell>
+                    <Badge variant="secondary">{brand.reference}</Badge>
+                  </TableCell>
+                  <TableCell>{brand.products_count ?? 0}</TableCell>
+                  <TableCell className="text-right">
+                    <div className="flex justify-end gap-2">
+                      <Button onClick={() => setSelectedBrand(brand)}>Editar</Button>
+                      <Button variant="destructive" onClick={() => void handleDelete(brand.id)}>
+                        Eliminar
+                      </Button>
+                    </div>
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+          </CardContent>
+        </Card>
       </div>
     </main>
   );
