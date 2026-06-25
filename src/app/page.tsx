@@ -24,6 +24,18 @@ export default function Home() {
             >
               Inicio
             </Link>
+            <Link
+              href="/admin/brands"
+              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
+            >
+              Formularios de marcas
+            </Link>
+            <Link
+              href="/admin/products"
+              className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
+            >
+              Formularios de productos
+            </Link>
             <a
               href="http://localhost:8000"
               className="rounded-lg border border-zinc-300 px-4 py-2 text-sm font-semibold text-zinc-700 transition hover:bg-zinc-100"
