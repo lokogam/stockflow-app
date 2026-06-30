@@ -80,7 +80,7 @@ export default function StorePage() {
         <div className="mx-auto flex h-14 w-full max-w-7xl items-center gap-4 px-4 sm:px-6">
           <div className="flex shrink-0 items-center gap-2.5">
             <ShoppingBag size={18} className="text-primary" />
-            <span className="font-semibold uppercase tracking-[0.15em]">TiendApp</span>
+            <span className="font-semibold uppercase tracking-[0.15em]">Stockflow-app</span>
             <span className="hidden text-[10px] text-muted-foreground sm:block">Catalogo</span>
           </div>
 
